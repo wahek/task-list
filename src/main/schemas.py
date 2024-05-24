@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 from datetime import datetime, timedelta
 from enum import Enum
@@ -34,10 +34,30 @@ class TaskCreateSchema(BaseModel):
                     "deadline": (datetime.now() + timedelta(days=1)).replace(microsecond=0),
                 }
             ]
-        }
+        },
     }
 
 
+class TaskPutSchema(BaseModel):
+    """
+    TODO Доделать схему http 422
+    """
+    title: str | None = Field(max_length=100, title="Task title", default=None)
+    description: str | None = Field(title="description of task (no limit)", default=None)
+    deadline: datetime | None = Field(title="deadline of task", default=None)
+    tags: TagEnum | None | str = Field(title="tag of task", default=None)
+    completed: bool | None = Field(default=None)
 
-
-
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "title": '',
+                    "description": '',
+                    "deadline": '',
+                    "tags": '',
+                    "completed": ''
+                }
+            ]
+        },
+    }
