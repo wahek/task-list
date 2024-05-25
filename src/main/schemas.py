@@ -24,6 +24,7 @@ class TaskCreateSchema(BaseModel):
     title: str = Field(max_length=100, title="Task title")
     description: str = Field(title="description of task (no limit)")
     deadline: datetime | None = Field(title="deadline of task", default=None)
+    tags: TagEnum | None = Field(title="tag of task", default=None)
 
     model_config = {
         "json_schema_extra": {
@@ -38,10 +39,8 @@ class TaskCreateSchema(BaseModel):
     }
 
 
-class TaskPutSchema(BaseModel):
-    """
-    TODO Доделать схему http 422
-    """
+class TaskPatchSchema(BaseModel):
+
     title: str | None = Field(max_length=100, title="Task title", default=None)
     description: str | None = Field(title="description of task (no limit)", default=None)
     deadline: datetime | None = Field(title="deadline of task", default=None)
@@ -52,11 +51,34 @@ class TaskPutSchema(BaseModel):
         "json_schema_extra": {
             "examples": [
                 {
-                    "title": '',
-                    "description": '',
-                    "deadline": '',
-                    "tags": '',
-                    "completed": ''
+                    "title": None,
+                    "description": None,
+                    "deadline": None,
+                    "tags": None,
+                    "completed": None,
+                }
+            ]
+        },
+    }
+
+
+class TaskPutSchema(BaseModel):
+
+    title: str | None = Field(max_length=100, title="Task title")
+    description: str | None = Field(title="description of task (no limit)")
+    deadline: datetime | None = Field(title="deadline of task", default=None)
+    tags: TagEnum | None | str = Field(title="tag of task", default=None)
+    completed: bool = Field(default=False)
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "title": None,
+                    "description": None,
+                    "deadline": None,
+                    "tags": None,
+                    "completed": None,
                 }
             ]
         },

@@ -2,7 +2,7 @@ from fastapi import FastAPI, Body, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.main.schemas import TagEnum, TaskCreateSchema, TaskGetSchema, TaskPutSchema
+from src.main.schemas import TagEnum, TaskCreateSchema, TaskGetSchema, TaskPatchSchema
 from src.database.models import Task
 
 from src.database.connect import get_session
@@ -40,15 +40,23 @@ async def get_task(task_id: int, session: AsyncSession = Depends(get_session)):
 
 
 @app.patch('/api/v1/tasks/{task_id}', response_model=TaskGetSchema)
-async def update_task(task_id: int, task: TaskPutSchema = Body(...),
+async def patch_task(task_id: int,
+                      task: TaskPatchSchema = Body(...),
                       session: AsyncSession = Depends(get_session)):
     async with session as s:
         result = await s.execute(select(Task).where(Task.id == task_id))
         task_bd = result.scalars().first()
         update = task.dict(exclude_unset=True)
         for k, v in update.items():
-            setattr(task_bd, k, v)
+            if v:
+                setattr(task_bd, k, v)
         s.add(task_bd)
         await s.commit()
         await s.refresh(task_bd)
         return task_bd
+
+
+# @app.put('/api/v1/tasks/{task_id}', response_model=TaskGetSchema)
+# async def update_task(task_id: int,
+#                       task: TaskPatchSchema = Body(...),
+#                       session: AsyncSession = Depends(get_session)):
