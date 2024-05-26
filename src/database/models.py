@@ -16,6 +16,6 @@ class Task(Base):
     title: Mapped[str] = mapped_column(String(100))
     description: Mapped[str] = mapped_column(Text())
     deadline: Mapped[datetime | None] = mapped_column(DateTime(), nullable=True, default=None)
-    tags: Mapped[TagEnum | None] = mapped_column("tags", String(50), default=None)
+    tags: Mapped[TagEnum | None] = mapped_column(String(50), default=None)
     completed: Mapped[bool] = mapped_column(Boolean(), default=False)
     date_created: Mapped[datetime] = mapped_column(DateTime(), default=datetime.now().replace(microsecond=0))
